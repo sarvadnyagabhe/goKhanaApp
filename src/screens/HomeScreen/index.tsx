@@ -26,7 +26,7 @@ const HomeScreen = ({navigation}: any) => {
     <SafeAreaView style={styles.parent}>
       <ScreenHeader
         Icon={<LocationIcon />}
-        onPress={() => navigation.navigate('LocationScreen')}
+        onPress={() => {}}
         leftIconStyle={{
           alignItems: 'center',
           flexDirection: 'row',
@@ -37,15 +37,16 @@ const HomeScreen = ({navigation}: any) => {
           marginRight: 10,
         }}
         rightIcon1={<QRIcon />}
-        onPressrightIcon1={() => navigation.navigate('QRCodeScreen')}
+        onPressrightIcon1={() => {}}
         rightIcon2={<NotificationIcon />}
-        onPressrightIcon2={() => navigation.navigate('NotificationScreen')}
+        onPressrightIcon2={() => {}}
         rightIcon3={<SearchIcon />}
-        onPressrightIcon3={() => navigation.navigate('SearchScreen')}
+        onPressrightIcon3={() => {}}
         rightIcon4={<DrawerIcon />}
-        onPressrightIcon4={() => navigation.navigate('SearchScreen')}
+        onPressrightIcon4={() => {}}
         title={''}></ScreenHeader>
       <View
+        key={Math.random()}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -68,12 +69,7 @@ const HomeScreen = ({navigation}: any) => {
                   ? {backgroundColor: '#e8b99e'}
                   : {backgroundColor: '#81ded9'}
               }
-              onPress={() => {
-                // navigation.navigate('FoodCourtScreenStack', {
-                //   screen: 'FoodCourtScreen',
-                // });
-                navigation.navigate('FoodCourtScreen');
-              }}
+              onPress={() => {}}
             />
           );
         })}
