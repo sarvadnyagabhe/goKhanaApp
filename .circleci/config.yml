@@ -1,16 +1,84 @@
 version: 2.1
+
+orbs:
+  node: circleci/node@5
+
 jobs:
-  build:
-    working_directory: ~/repo
-    docker:
-      - image: cimg/node:18.10.0
+  test-node:
+    executor: node/default
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./test-results/
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - node/install-packages:
+          pkg-manager: npm
       - run:
-          name: Install Dependencies
-          command: npm install
+          command: npm install jest-junit --ignore-workspace-root-check
+      - store_test_results:
+          path: ./test-results/
+
+  build-android:
+    docker:
+      - image: cimg/android:2024.01
+        environment:
+          BUNDLE_PATH: vendor/bundle
+          JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+    working_directory: ~/repo
+    steps:
+      - checkout
       - run:
-          name: Run tests
-          command: npm run test
+          name: Decrypt Keystore File
+          command: openssl aes-256-cbc -d -in android/app/release.keystore.enc -out android/app/release.keystore -k ENCRYPTION_KEY
+      - run:
+          name: Install Java 11
+          command: sudo apt-get update && sudo apt-get install -y openjdk-11-jdk
+      - run:
+          name: Set JAVA_HOME
+          command: echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> $BASH_ENV
+      - run:
+          name: Install Node.js
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+      - run:
+          name: Check Node Version
+          command: node --version
+      - node/install:
+          node-version: '16.17.0' //define your node_version you are using
+      - run:
+          name: Install node modules
+          command: npm i
+      - run:
+          name: Chmod permissions
+          command: sudo chmod +x ./gradlew
+          working_directory: android
+      - run:
+          name: Run tests and upload to Play Store
+          command: fastlane deploy_to_production
+          working_directory: android
+
+
+workflows:
+  build-and-test:
+    jobs:
+      - build-ios
+      - build-ruby
+      - build-android
+      
+# version: 2.1
+# jobs:
+#   build:
+#     working_directory: ~/repo
+#     docker:
+#       - image: cimg/node:18.10.0
+#     steps:
+#       - checkout
+#       - restore_cache:
+#           key: dependency-cache-{{ checksum "yarn.lock" }}
+#       - run:
+#           name: Install Dependencies
+#           command: npm install
+#       - run:
+#           name: Run tests
+#           command: npm run test
+
