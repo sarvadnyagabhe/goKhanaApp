@@ -60,7 +60,6 @@ jobs:
 workflows:
   build-and-test:
     jobs:
-      - build-ruby
       - build-android
 # version: 2.1
 # jobs:
