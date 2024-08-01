@@ -44,7 +44,7 @@ jobs:
           name: Check Node Version
           command: node --version
       - node/install:
-          node-version: '16.17.0' //define your node_version you are using
+          node-version: '18.10.0' //define your node_version you are using
       - run:
           name: Install node modules
           command: npm i
