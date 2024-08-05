@@ -25,11 +25,18 @@ jobs:
             - node_modules
             - android
 
-  android_build:
+   android_build:
     executor: android-executor
     steps:
       - attach_workspace:
           at: ~/repo
+      - run:
+          name: Install Node.js 18
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            node -v
+            npm -v
       - run:
           name: Set Gradle Permissions
           command: chmod +x ./android/gradlew
@@ -37,11 +44,12 @@ jobs:
           name: Build Android Development APK
           command: |
             cd android
-            ./gradlew assembleDebug
+            ./gradlew assembleDebug --stacktrace
       - persist_to_workspace:
           root: .
           paths:
             - android/app/build/outputs/apk/debug
+
 
 workflows:
   version: 2
