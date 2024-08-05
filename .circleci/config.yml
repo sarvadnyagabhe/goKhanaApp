@@ -1,48 +1,104 @@
 version: 2.1
-jobs:
-  build:
-    working_directory: ~/repo
+
+executors:
+  node-executor:
     docker:
-      - image: cimg/node:18.10.0
+      - image: circleci/node:14
+    working_directory: ~/repo
+
+  android-executor:
+    docker:
+      - image: circleci/android:api-29
+    working_directory: ~/repo
+
+  ios-executor:
+    macos:
+      xcode: '12.5.1' # Choose the appropriate Xcode version
+    working_directory: ~/repo
+
+jobs:
+  setup:
+    executor: node-executor
     steps:
       - checkout
       - run:
           name: Install Dependencies
           command: npm install
-
-      - run:
-          name: Run tests
-          command: npm run test
-
       - persist_to_workspace:
           root: .
           paths:
             - node_modules
             - android
 
-    android_build:
-      executor: android-executor
-      steps:
-        - attach_workspace:
-            at: ~/repo
-        - run:
-            name: Build Android Development APK
-            command: |
-              cd android
-              ./gradlew assembleDebug
-        - persist_to_workspace:
-            root: .
-            paths:
-              - android/app/build/outputs/apk/debug
+  android_build:
+    executor: android-executor
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Build Android Development APK
+          command: |
+            cd android
+            ./gradlew assembleDebug
+      - persist_to_workspace:
+          root: .
+          paths:
+            - android/app/build/outputs/apk/debug
 
 workflows:
   version: 2
-  build:
+  build_and_test:
     jobs:
       - setup
       - android_build:
           requires:
             - setup
-      - ios_build:
-          requires:
-            - setup
+# version: 2.1
+# jobs:
+#   build:
+#     working_directory: ~/repo
+#     docker:
+#       - image: cimg/node:18.10.0
+#     steps:
+#       - checkout
+#       - run:
+#           name: Install Dependencies
+#           command: npm install
+
+#       - run:
+#           name: Run tests
+#           command: npm run test
+
+#       - persist_to_workspace:
+#           root: .
+#           paths:
+#             - node_modules
+#             - android
+
+#     android_build:
+#       executor: android-executor
+#       steps:
+#         - attach_workspace:
+#             at: ~/repo
+#         - run:
+#             name: Build Android Development APK
+#             command: |
+#               cd android
+#               ./gradlew assembleDebug
+#         - persist_to_workspace:
+#             root: .
+#             paths:
+#               - android/app/build/outputs/apk/debug
+
+# workflows:
+#   version: 2
+#   build:
+#     jobs:
+#       - setup
+#       - android_build:
+#           requires:
+#             - setup
+#       - ios_build:
+#           requires:
+#             - setup
+
