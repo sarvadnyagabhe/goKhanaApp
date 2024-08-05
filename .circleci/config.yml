@@ -3,17 +3,12 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:14
+      - image: circleci/node:18.10.0
     working_directory: ~/repo
 
   android-executor:
     docker:
       - image: circleci/android:api-29
-    working_directory: ~/repo
-
-  ios-executor:
-    macos:
-      xcode: '12.5.1' # Choose the appropriate Xcode version
     working_directory: ~/repo
 
 jobs:
