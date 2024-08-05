@@ -1,35 +1,16 @@
 version: 2.1
 
 executors:
-  node-executor:
-    docker:
-      - image: circleci/node:18
-    working_directory: ~/repo
-
   android-executor:
     docker:
       - image: circleci/android:api-29
     working_directory: ~/repo
 
 jobs:
-  setup:
-    executor: node-executor
-    steps:
-      - checkout
-      - run:
-          name: Install Dependencies
-          command: npm install
-      - persist_to_workspace:
-          root: .
-          paths:
-            - node_modules
-            - android
-
-   android_build:
+  android_build:
     executor: android-executor
     steps:
-      - attach_workspace:
-          at: ~/repo
+      - checkout
       - run:
           name: Install Node.js 18
           command: |
@@ -37,7 +18,9 @@ jobs:
             sudo apt-get install -y nodejs
             node -v
             npm -v
-     
+      - run:
+          name: Install Dependencies
+          command: npm install
       - run:
           name: Set Gradle Permissions
           command: chmod +x ./android/gradlew
@@ -55,10 +38,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - setup
-      - android_build:
-          requires:
-            - setup
+      - android_build
 # version: 2.1
 # jobs:
 #   build:
