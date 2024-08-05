@@ -34,3 +34,15 @@ jobs:
             root: .
             paths:
               - android/app/build/outputs/apk/debug
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - setup
+      - android_build:
+          requires:
+            - setup
+      - ios_build:
+          requires:
+            - setup
