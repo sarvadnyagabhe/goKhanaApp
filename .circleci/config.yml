@@ -36,6 +36,9 @@ jobs:
       - attach_workspace:
           at: ~/repo
       - run:
+          name: Set Gradle Permissions
+          command: chmod +x ./android/gradlew
+      - run:
           name: Build Android Development APK
           command: |
             cd android
