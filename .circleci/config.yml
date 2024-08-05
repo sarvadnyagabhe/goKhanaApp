@@ -18,14 +18,16 @@ jobs:
       - checkout
       - run:
           name: Install Dependencies
-          command: npm install
+          command: |
+            npm install
+            npm cache clean
       - persist_to_workspace:
           root: .
           paths:
             - node_modules
             - android
 
-   android_build:
+  android_build:
     executor: android-executor
     steps:
       - attach_workspace:
@@ -49,7 +51,6 @@ jobs:
           root: .
           paths:
             - android/app/build/outputs/apk/debug
-
 
 workflows:
   version: 2
