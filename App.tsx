@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import AccountIcon from './src/assets/Icons/CartIcon';
 
 const App = () => {
   const [message, setMessage] = React.useState();
@@ -40,6 +41,35 @@ const App = () => {
           {message}
         </Text>
       )}
+      <View style={{alignItems: 'center'}}>
+        <View
+          style={{
+            width: 300,
+            height: 200,
+            borderWidth: 1,
+            marginTop: 12,
+
+            // backgroundColor: 'orange',
+          }}></View>
+        <View
+          style={{
+            position: 'absolute',
+            zIndex: 1,
+            alignSelf: 'center',
+            top: -8,
+          }}>
+          <View
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 40,
+              backgroundColor: 'gray',
+              alignItems: 'center',
+            }}>
+            <AccountIcon />
+          </View>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
